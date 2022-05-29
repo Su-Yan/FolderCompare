@@ -30,8 +30,8 @@ public class FolderInformation {
         temp = sc.next();
         while (!temp.equals("0")){
             file = new File(temp);
-            if (!file.isDirectory()){
-                System.out.println("输入路径有误！请重新输入！！！");
+            if (!file.isDirectory()||basePath.equals(temp)){
+                System.out.println("路径有误！且不要输入与基版路径相同路径！请重新输入！！！");
                 temp = sc.next();
                 continue;
             }
@@ -58,7 +58,7 @@ public class FolderInformation {
 //            System.out.println("请输入黑名单txt路径：");
 //            outputPath = sc.next();
 //            file = new File(outputPath);
-//            if (file.isFile()){
+//            if (file.isDirectory()){
 //                break;
 //            }else {
 //                System.out.println("输入路径有误！请重新输入！！！");
