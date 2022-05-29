@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f6248f8f-ae26-41c2-bb96-b6421c842179" name="Changes" comment="比较文件夹内容 初版完成">
+    <list default="true" id="f6248f8f-ae26-41c2-bb96-b6421c842179" name="Changes" comment="已实现读取所有差异文件目录信息">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FileFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FileFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FolderCompare.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FolderCompare.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FolderCompareImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FolderCompareImplement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FolderInformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FolderInformation.java" afterDir="false" />
@@ -89,7 +89,7 @@
       <option name="presentableId" value="Default" />
       <updated>1653718640263</updated>
       <workItem from="1653718641521" duration="21446000" />
-      <workItem from="1653796356952" duration="18226000" />
+      <workItem from="1653796356952" duration="26792000" />
     </task>
     <task id="LOCAL-00001" summary="比较文件夹内容 初版完成">
       <created>1653744404028</created>
@@ -98,7 +98,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653744404028</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="已实现读取所有差异文件目录信息">
+      <created>1653817042904</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1653817042905</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -117,6 +124,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="比较文件夹内容 初版完成" />
-    <option name="LAST_COMMIT_MESSAGE" value="比较文件夹内容 初版完成" />
+    <MESSAGE value="已实现读取所有差异文件目录信息" />
+    <option name="LAST_COMMIT_MESSAGE" value="已实现读取所有差异文件目录信息" />
   </component>
 </project>

@@ -3,18 +3,17 @@ import java.util.Scanner;
 
 public class FolderCompare {
     public static void main(String[] args) throws IOException {
-        Scanner sc=new Scanner(System.in);
-        int threadnums = 0;     //线程数量
+        Scanner sc = new Scanner(System.in);
         FolderInformation folderInformation =new FolderInformation();
-        //设置线程数，默认可用核心数+1
-        //System.out.println("请输入线程数（请输入1~20，否则使用默认）：");
-        //threadnums = sc.nextInt();
-        if (threadnums <= 0 || threadnums >20){
-            threadnums = Runtime.getRuntime().availableProcessors() + 1;
-        }
-        folderInformation.init();
         FolderCompareImplement folderCompareImplement =new FolderCompareImplement(folderInformation);
         folderCompareImplement.startCompare();
-        folderCompareImplement.copyFilesToBasePath();
+        folderCompareImplement.getDiffFilesDetails();
+        System.out.println("已获得差异文件信息，请问还要继续吗？继续则将拷贝差异文件至指定文件夹（y/n）");
+        String _continue = sc.next();
+        if (_continue.equalsIgnoreCase("n")){
+            System.out.println("感谢使用！再见！");
+            return;
+        }
+        folderCompareImplement.copyFilesToTargetPath();
     }
 }

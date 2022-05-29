@@ -1,6 +1,7 @@
 ### IntelliJ IDEA ###
 out/
 record/
+diff_file_record/
 !**/src/main/**/out/
 !**/src/test/**/out/
 

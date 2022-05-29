@@ -1,34 +1,20 @@
 import com.github.difflib.DiffUtils;
 import com.github.difflib.UnifiedDiffUtils;
 import com.github.difflib.patch.Patch;
-import javafx.collections.transformation.FilteredList;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 public class FolderCompareImplement {
 
-    private File outputDirectory;
     private FolderInformation folderInformation;
-    private String fileDetailsPath = "";
 
     FolderCompareImplement(FolderInformation folderInformation){
         //初始化文件夹信息并指定输出目录
         this.folderInformation = folderInformation;
-        if (folderInformation.getOutputPath().equals("")||folderInformation.getOutputPath()==null){
-            outputDirectory = new File(System.getProperty("user.dir")+"\\record\\");
-        }else{
-            outputDirectory = new File(folderInformation.getOutputPath()+"\\record\\");
-        }
-        if (!outputDirectory.exists()){
-            outputDirectory.mkdirs();
-        }
-    }
-
-    FolderCompareImplement(){
-        outputDirectory = new File(System.getProperty("user.dir")+"\\record\\");
     }
 
     /**
@@ -47,7 +33,7 @@ public class FolderCompareImplement {
         //获取指定path路径下文件夹/文件明细
         File targetDirectory = new File(path);
         File []directoryList = null;
-        String outputPath = outputDirectory.getAbsolutePath()+"\\"+targetDirectory.getName()+outputFileSuffix;
+        String outputPath = this.folderInformation.getOutputDirectory().getAbsolutePath()+"\\"+targetDirectory.getName()+outputFileSuffix;
         FileWriter fileWriter = null;
         //将明细写入指定文件
         switch (filterType){
@@ -56,7 +42,7 @@ public class FolderCompareImplement {
                 fileWriter = new FileWriter(outputPath);
                 break;
             case "File":
-                outputPath = outputDirectory.getAbsolutePath()+"\\"+this.fileDetailsPath+outputFileSuffix;
+                outputPath = this.folderInformation.getOutputDirectory().getAbsolutePath()+"\\"+this.folderInformation.getFileDetailsPath()+outputFileSuffix;
                 fileWriter = new FileWriter(outputPath,true);
                 directoryList = targetDirectory.listFiles();
                 break;
@@ -115,7 +101,7 @@ public class FolderCompareImplement {
     public String getFileList(String path) throws IOException {
         File[] files = new File(path).listFiles();
         LinkedList<File> fileLinkedList = new LinkedList<>();
-        FileWriter fileWriter = new FileWriter(outputDirectory.getAbsolutePath()+"\\"+new File(path).getName()+"_file_details_list.txt");
+        FileWriter fileWriter = new FileWriter(this.folderInformation.getOutputDirectory().getAbsolutePath()+"\\"+new File(path).getName()+"_file_details_list.txt");
         fileWriter.write("");
         for (File f :
                 files) {
@@ -136,7 +122,7 @@ public class FolderCompareImplement {
             }
         }
         fileWriter.close();
-        return new File(outputDirectory.getAbsolutePath()+"\\"+new File(path).getName()+"_file_details_list.txt").getAbsolutePath();
+        return new File(this.folderInformation.getOutputDirectory().getAbsolutePath()+"\\"+new File(path).getName()+"_file_details_list.txt").getAbsolutePath();
     }
 
     /**
@@ -154,12 +140,12 @@ public class FolderCompareImplement {
         Patch<String> patch = DiffUtils.diff(baseList,targeList);
         List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff(new File(baseFilePath).getName(),new File(targetFilePath).getName(),baseList,patch,0);
         //fileWriter仅输出目标文件比基版文件多哪些东西
-        String outputPath = outputDirectory.getAbsolutePath()+"\\Diff_"+new File(baseFilePath).getName().replace(".txt","")+"_"+new File(targetFilePath).getName().replace(".txt","")+".txt";
+        String outputPath = this.folderInformation.getOutputDirectory().getAbsolutePath()+"\\Diff_"+new File(baseFilePath).getName().replace(".txt","")+"_"+new File(targetFilePath).getName().replace(".txt","")+".txt";
         FileWriter fileWriter = new FileWriter(outputPath);
         fileWriter.write("");
 
         //fileWriterDetails两文件详细差异输出
-        String outputDetailsPath = outputDirectory.getAbsolutePath()+"\\Diff_"+new File(baseFilePath).getName().replace(".txt","")+"_"+new File(targetFilePath).getName().replace(".txt","")+"_details.txt";
+        String outputDetailsPath = this.folderInformation.getOutputDirectory().getAbsolutePath()+"\\Diff_"+new File(baseFilePath).getName().replace(".txt","")+"_"+new File(targetFilePath).getName().replace(".txt","")+"_details.txt";
         FileWriter fileWriterDetails = new FileWriter(outputDetailsPath);
         //由于下面for循环从第三行开始，所以手动补齐前两行
         fileWriterDetails.write("");
@@ -202,25 +188,72 @@ public class FolderCompareImplement {
     }
 
     /**
-     * 复制目标路径差异文件至基版路径
+     * 获取基版路径与目标路径差异文件详细信息
      * @throws IOException
      */
-    public void copyFilesToBasePath() throws IOException {
+    public List<String> getDiffFilesDetails() throws IOException {
         String baseFilePath = this.folderInformation.getBasePath();                 //基版路径
         List<String>targetFilePath = this.folderInformation.getTargetPathList();    //目标路径
+        List<String> detailsListPath = new LinkedList<>();
         String outputPath = "";
 
         //遍历所有基版路径与目标路径比较形成的差异文件
         for (String targetTempPath :
                 targetFilePath) {
-            List<String> copyOriginPathList = Files.readAllLines(new File(outputDirectory.getAbsolutePath()+"\\Diff_"+new File(baseFilePath).getName()+"_directory_list_"+new File(targetTempPath).getName()+"_directory_list.txt").toPath());
+            List<String> copyOriginPathList = Files.readAllLines(new File(this.folderInformation.getOutputDirectory().getAbsolutePath()+"\\Diff_"+new File(baseFilePath).getName()+"_directory_list_"+new File(targetTempPath).getName()+"_directory_list.txt").toPath());
 
-            this.fileDetailsPath = "Details_file_"+new File(baseFilePath).getName()+"_"+new File(targetTempPath).getName()+"_"+System.currentTimeMillis();
+            this.folderInformation.setFileDetailsPath("Details_file_"+new File(baseFilePath).getName()+"_"+new File(targetTempPath).getName()+"_"+System.currentTimeMillis());
             for (String path :
                     copyOriginPathList) {
                 outputPath = getDirectoryList(targetTempPath+"\\"+path,"File");
             }
             System.out.println(baseFilePath+"与"+targetTempPath+"差异文件详情请见："+outputPath);
+            detailsListPath.add(outputPath);
         }
+        this.folderInformation.setFileDetailsPathList(detailsListPath);
+        return detailsListPath;
+    }
+
+    public String copyFilesToTargetPath() throws IOException {
+        Scanner sc =new Scanner(System.in);
+        System.out.println("请输入目标文件夹差异文件输出路径（输入0为默认目录）：");
+        String tempString = sc.next();
+        File tempFile = null;
+        while (!tempString.equals("0")){
+            tempFile = new File(tempString);
+            if (!tempFile.isDirectory()){
+                System.out.println("输入路径有误！请重新输入！！！");
+                tempString = sc.next();
+                continue;
+            }
+        }
+        if (tempString.equals("0")){
+            tempString = System.getProperty("user.dir")+"\\diff_file_record";
+        }
+        this.folderInformation.setDiffFileOutputPath(tempString);
+
+        List<String> fileDetailsPathList = this.folderInformation.getFileDetailsPathList();
+        List<String> details;
+        String tempPath = "";
+        for (String filePath :
+                fileDetailsPathList) {
+            tempPath = filePath.split("_")[3];
+            details = Files.readAllLines(new File(filePath).toPath());
+            for (String realPath :
+                    details) {
+                tempFile = new File(realPath);
+                int endIndex = tempFile.getParentFile().getAbsolutePath().indexOf(tempPath) + tempPath.length();
+                tempString = this.folderInformation.getDiffFileOutputPath() + tempFile.getParentFile().getAbsolutePath().substring(endIndex);
+                tempFile = new File(tempString);
+                if (!tempFile.exists()){
+                    tempFile.mkdirs();
+                }
+                System.out.println(tempFile.getAbsolutePath()+"\\"+new File(realPath).getName());
+                OutputStream outputStream = new FileOutputStream(tempFile.getAbsolutePath()+"\\"+new File(realPath).getName());
+                Files.copy(new File(realPath).toPath(),outputStream);
+            }
+        }
+        System.out.println("感谢使用！再见！");
+        return this.folderInformation.getDiffFileOutputPath();
     }
 }
